@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class Register extends StatelessWidget {
-  const Register({Key? key}) : super(key: key);
+  const Register({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -55,12 +55,12 @@ class Register extends StatelessWidget {
                       onPressed: () {
                         Navigator.pushNamed(context, '/categories');
                       },
-                      child: Text('Register'),
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Colors.blue,
                         foregroundColor: Colors.white,
                         minimumSize: Size(double.infinity, 40),
                       ),
+                      child: Text('Register'),
                     ),
                     Padding(
                       padding: EdgeInsets.only(top: 20),
