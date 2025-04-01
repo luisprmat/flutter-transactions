@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_transactions/screens/auth/Login.dart';
-import 'package:flutter_transactions/screens/auth/Register.dart';
+import 'package:flutter_transactions/screens/auth/login.dart';
+import 'package:flutter_transactions/screens/auth/register.dart';
+import 'package:flutter_transactions/screens/categories/categories_list.dart';
 
 void main() {
   runApp(MyApp());
@@ -17,6 +18,7 @@ class MyApp extends StatelessWidget {
       routes: {
         '/login': (context) => Login(),
         '/register': (context) => Register(),
+        '/categories': (context) => CategoriesList(),
       },
     );
   }
