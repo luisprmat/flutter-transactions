@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_transactions/models/category.dart';
 import 'package:flutter_transactions/services/api.dart';
+import 'package:flutter_transactions/widgets/category_edit.dart';
 
 class CategoriesList extends StatefulWidget {
   const CategoriesList({super.key});
@@ -12,7 +13,6 @@ class CategoriesList extends StatefulWidget {
 class CategoriesListState extends State<CategoriesList> {
   Future<List<Category>>? futureCategories;
   ApiService apiService = ApiService();
-  final _formKey = GlobalKey<FormState>();
   late Category selectedCategory;
   final categoryNameController = TextEditingController();
 
@@ -39,47 +39,11 @@ class CategoriesListState extends State<CategoriesList> {
                   title: Text(category.name),
                   trailing: IconButton(
                     onPressed: () {
-                      selectedCategory = category;
-                      categoryNameController.text = category.name;
                       showModalBottomSheet(
                         context: context,
+                        isScrollControlled: true,
                         builder: (BuildContext context) {
-                          return Container(
-                            padding: EdgeInsets.all(20),
-                            child: Form(
-                              key: _formKey,
-                              child: Column(
-                                children: [
-                                  Text('Edit Category'),
-                                  TextFormField(
-                                    decoration: InputDecoration(
-                                      labelText: 'Category Name',
-                                    ),
-                                    controller: categoryNameController,
-                                    validator: (String? value) {
-                                      if (value == null || value.isEmpty) {
-                                        return 'Please enter category name';
-                                      }
-                                      return null;
-                                    },
-                                  ),
-                                  Padding(
-                                    padding: EdgeInsets.only(top: 20),
-                                    child: ElevatedButton(
-                                      onPressed: () {
-                                        apiService.saveCategory(
-                                          selectedCategory.id,
-                                          categoryNameController.text,
-                                        );
-                                        Navigator.pop(context);
-                                      },
-                                      child: Text('Update'),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          );
+                          return CategoryEdit(category);
                         },
                       );
                     },
