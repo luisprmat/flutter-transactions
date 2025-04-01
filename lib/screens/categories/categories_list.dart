@@ -16,7 +16,8 @@ class CategoriesListState extends State<CategoriesList> {
 
   Future<List<Category>> fetchCategories() async {
     final http.Response response = await http.get(
-      Uri.parse('https://tight-optimum-weasel.ngrok-free.app/api/categories'),
+      // Uri.parse('https://tight-optimum-weasel.ngrok-free.app/api/categories'),
+      Uri.parse('http://10.0.2.2:8000/api/categories'),
     );
 
     final Map<String, dynamic> data = json.decode(response.body);
