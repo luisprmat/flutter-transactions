@@ -13,14 +13,37 @@ class MyApp extends StatelessWidget {
       title: 'Welcome to Flutter',
       home: Scaffold(
         appBar: AppBar(
-          title: Text('Welcome to Flutter'),
+          title: Text('Login'),
         ),
-        body: Center(
-          child: Text(
-            'Hello World',
-            style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
-          ),
-        ),
+        body: Column(
+          children: <Widget>[
+            TextField(
+              keyboardType: TextInputType.emailAddress,
+              decoration: InputDecoration(
+                border: OutlineInputBorder(),
+                labelText: 'Email',
+              ),
+            ),
+            TextField(
+              keyboardType: TextInputType.visiblePassword,
+              decoration: InputDecoration(
+                border: OutlineInputBorder(),
+                labelText: 'Password',
+              ),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                print('Login button pressed');
+              },
+              child: Text('Login'),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.blue,
+                foregroundColor: Colors.white,
+                minimumSize: Size(double.infinity, 36),
+              ),
+            ),
+          ],
+        )
       )
     );
   }
