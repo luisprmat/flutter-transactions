@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_transactions/models/category.dart';
-import 'package:flutter_transactions/services/api.dart';
 
 class CategoryEdit extends StatefulWidget {
   final Category category;
 
-  const CategoryEdit(this.category, {super.key});
+  final Function categoryCallback;
+
+  const CategoryEdit(this.category, this.categoryCallback, {super.key});
 
   @override
   CategoryEditState createState() => CategoryEditState();
@@ -14,7 +15,7 @@ class CategoryEdit extends StatefulWidget {
 class CategoryEditState extends State<CategoryEdit> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final categoryNameController = TextEditingController();
-  ApiService apiService = ApiService();
+
   String errorMessage = '';
 
   Future saveCategory(context) async {
@@ -24,14 +25,11 @@ class CategoryEditState extends State<CategoryEdit> {
       return;
     }
 
-    apiService
-        .saveCategory(widget.category.id, categoryNameController.text)
-        .then((dynamic response) => Navigator.pop(context))
-        .catchError((error) {
-          setState(() {
-            errorMessage = 'Failed to update categoty';
-          });
-        });
+    widget.category.name = categoryNameController.text;
+
+    await widget.categoryCallback(widget.category);
+
+    Navigator.pop(context);
   }
 
   @override
@@ -90,10 +88,7 @@ class CategoryEditState extends State<CategoryEdit> {
                 ],
               ),
             ),
-            Text(
-              errorMessage,
-              style: TextStyle(color: Colors.red),
-            )
+            Text(errorMessage, style: TextStyle(color: Colors.red)),
           ],
         ),
       ),
