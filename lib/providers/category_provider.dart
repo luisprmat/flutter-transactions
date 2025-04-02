@@ -26,10 +26,21 @@ class CategoryProvider extends ChangeNotifier {
       Category updatedCategory = await apiService.saveCategory(category);
       int index = categories.indexOf(category);
       categories[index] = updatedCategory;
-      
+
       notifyListeners();
     } catch (e) {
       print('Failed to update category: $e');
+    }
+  }
+
+  Future deleteCategory(Category category) async {
+    try {
+      await apiService.deleteCategory(category.id);
+      categories.remove(category);
+
+      notifyListeners();
+    } catch (e) {
+      print('Failed to delete category: $e');
     }
   }
 }
