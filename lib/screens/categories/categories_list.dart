@@ -32,17 +32,56 @@ class CategoriesListState extends State<CategoriesList> {
 
               return ListTile(
                 title: Text(category.name),
-                trailing: IconButton(
-                  onPressed: () {
-                    showModalBottomSheet(
-                      context: context,
-                      isScrollControlled: true,
-                      builder: (context) {
-                        return CategoryEdit(category, provider.updateCategory);
+                trailing: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    IconButton(
+                      onPressed: () {
+                        showModalBottomSheet(
+                          context: context,
+                          isScrollControlled: true,
+                          builder: (context) {
+                            return CategoryEdit(
+                              category,
+                              provider.updateCategory,
+                            );
+                          },
+                        );
                       },
-                    );
-                  },
-                  icon: Icon(Icons.edit),
+                      icon: Icon(Icons.edit),
+                    ),
+                    IconButton(
+                      onPressed: () {
+                        showDialog(
+                          context: context,
+                          builder: (context) {
+                            return AlertDialog(
+                              title: Text('Delete category'),
+                              content: Text(
+                                'Are you sure you want to delete this category?',
+                              ),
+                              actions: [
+                                TextButton(
+                                  onPressed: () {
+                                    Navigator.pop(context);
+                                  },
+                                  child: Text('Cancel'),
+                                ),
+                                TextButton(
+                                  onPressed: () {
+                                    provider.deleteCategory(category);
+                                    Navigator.pop(context);
+                                  },
+                                  child: Text('Delete'),
+                                ),
+                              ],
+                            );
+                          },
+                        );
+                      },
+                      icon: Icon(Icons.delete),
+                    ),
+                  ],
                 ),
               );
             },
