@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_transactions/providers/category_provider.dart';
 import 'package:flutter_transactions/screens/auth/login.dart';
 import 'package:flutter_transactions/screens/auth/register.dart';
 import 'package:flutter_transactions/screens/categories/categories_list.dart';
+import 'package:provider/provider.dart';
 
 void main() {
   runApp(MyApp());
@@ -12,14 +14,21 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Welcome to Flutter',
-      home: Login(),
-      routes: {
-        '/login': (context) => Login(),
-        '/register': (context) => Register(),
-        '/categories': (context) => CategoriesList(),
-      },
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider<CategoryProvider>(
+          create: (context) => CategoryProvider(),
+        ),
+      ],
+      child: MaterialApp(
+        title: 'Welcome to Flutter',
+        home: Login(),
+        routes: {
+          '/login': (context) => Login(),
+          '/register': (context) => Register(),
+          '/categories': (context) => CategoriesList(),
+        },
+      ),
     );
   }
 }
