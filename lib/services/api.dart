@@ -53,4 +53,23 @@ class ApiService {
       throw Exception('Failed to delete category');
     }
   }
+
+  Future addCategory(String name) async {
+    String url = '$baseUrl/api/categories';
+
+    final http.Response response = await http.post(
+      Uri.parse(url),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+      body: jsonEncode(<String, String>{'name': name}),
+    );
+
+    if (response.statusCode != 201) {
+      throw Exception('Failed to create category');
+    }
+
+    final Map<String, dynamic> data = jsonDecode(response.body);
+    return Category.fromJson(data['data']);
+  }
 }
