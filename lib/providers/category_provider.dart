@@ -23,12 +23,11 @@ class CategoryProvider extends ChangeNotifier {
 
   Future updateCategory(Category category) async {
     try {
-      Category updatedCategory = await apiService.saveCategory(
-        category.id,
-        category.name,
-      );
+      Category updatedCategory = await apiService.saveCategory(category);
       int index = categories.indexOf(category);
       categories[index] = updatedCategory;
+      
+      notifyListeners();
     } catch (e) {
       print('Failed to update category: $e');
     }
