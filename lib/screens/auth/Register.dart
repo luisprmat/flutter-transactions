@@ -1,7 +1,48 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_transactions/providers/auth_provider.dart';
+import 'package:provider/provider.dart';
 
-class Register extends StatelessWidget {
+class Register extends StatefulWidget {
   const Register({super.key});
+
+  @override
+  RegisterState createState() => RegisterState();
+}
+
+class RegisterState extends State<Register> {
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  final nameController = TextEditingController();
+  final emailController = TextEditingController();
+  final passwordController = TextEditingController();
+  final confirmPasswordController = TextEditingController();
+
+  String errorMessage = '';
+
+  Future<void> submit() async {
+    final form = _formKey.currentState;
+
+    if (!form!.validate()) {
+      return;
+    }
+
+    final AuthProvider provider = Provider.of(context, listen: false);
+
+    try {
+      String token = await provider.register(
+        nameController.text,
+        emailController.text,
+        passwordController.text,
+        confirmPasswordController.text,
+        'Some device name',
+      );
+
+      Navigator.pop(context);
+    } catch (Exception) {
+      setState(() {
+        errorMessage = Exception.toString().replaceAll('Exception: ', '');
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -17,59 +58,103 @@ class Register extends StatelessWidget {
               margin: EdgeInsets.only(left: 20, right: 20),
               child: Padding(
                 padding: EdgeInsets.all(20),
-                child: Column(
-                  children: <Widget>[
-                    TextField(
-                      keyboardType: TextInputType.name,
-                      decoration: InputDecoration(
-                        border: OutlineInputBorder(),
-                        labelText: 'Name',
+                child: Form(
+                  key: _formKey,
+                  child: Column(
+                    children: <Widget>[
+                      TextFormField(
+                        keyboardType: TextInputType.name,
+                        controller: nameController,
+                        validator: (String? value) {
+                          if (value!.isEmpty) {
+                            return 'Name is required';
+                          }
+
+                          return null;
+                        },
+                        decoration: InputDecoration(
+                          border: OutlineInputBorder(),
+                          labelText: 'Name',
+                        ),
                       ),
-                    ),
-                    SizedBox(height: 20),
-                    TextField(
-                      keyboardType: TextInputType.emailAddress,
-                      decoration: InputDecoration(
-                        border: OutlineInputBorder(),
-                        labelText: 'Email',
+                      SizedBox(height: 20),
+                      TextFormField(
+                        keyboardType: TextInputType.emailAddress,
+                        controller: emailController,
+                        validator: (String? value) {
+                          if (value!.isEmpty) {
+                            return 'Email is required';
+                          }
+
+                          return null;
+                        },
+                        decoration: InputDecoration(
+                          border: OutlineInputBorder(),
+                          labelText: 'Email',
+                        ),
                       ),
-                    ),
-                    SizedBox(height: 20),
-                    TextField(
-                      keyboardType: TextInputType.visiblePassword,
-                      decoration: InputDecoration(
-                        border: OutlineInputBorder(),
-                        labelText: 'Password',
+                      SizedBox(height: 20),
+                      TextFormField(
+                        keyboardType: TextInputType.visiblePassword,
+                        controller: passwordController,
+                        obscureText: true,
+                        autocorrect: false,
+                        enableSuggestions: false,
+                        validator: (String? value) {
+                          if (value!.isEmpty) {
+                            return 'Password is required';
+                          }
+
+                          return null;
+                        },
+                        decoration: InputDecoration(
+                          border: OutlineInputBorder(),
+                          labelText: 'Password',
+                        ),
                       ),
-                    ),
-                    SizedBox(height: 20),
-                    TextField(
-                      keyboardType: TextInputType.visiblePassword,
-                      decoration: InputDecoration(
-                        border: OutlineInputBorder(),
-                        labelText: 'Confirm Password',
+                      SizedBox(height: 20),
+                      TextFormField(
+                        keyboardType: TextInputType.visiblePassword,
+                        controller: confirmPasswordController,
+                        obscureText: true,
+                        autocorrect: false,
+                        enableSuggestions: false,
+                        validator: (String? value) {
+                          if (value!.isEmpty) {
+                            return 'Confirm Password is required';
+                          }
+
+                          if (value != passwordController.text) {
+                            return 'Passwords do not match';
+                          }
+
+                          return null;
+                        },
+                        decoration: InputDecoration(
+                          border: OutlineInputBorder(),
+                          labelText: 'Confirm Password',
+                        ),
                       ),
-                    ),
-                    SizedBox(height: 20),
-                    ElevatedButton(
-                      onPressed: () {
-                        Navigator.pushNamed(context, '/categories');
-                      },
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.blue,
-                        foregroundColor: Colors.white,
-                        minimumSize: Size(double.infinity, 40),
+                      SizedBox(height: 20),
+                      ElevatedButton(
+                        onPressed: () => submit(),
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.purple,
+                          foregroundColor: Colors.white,
+                          minimumSize: Size(double.infinity, 40),
+                        ),
+                        child: Text('Register'),
                       ),
-                      child: Text('Register'),
-                    ),
-                    Padding(
-                      padding: EdgeInsets.only(top: 20),
-                      child: InkWell(
-                        child: Text('<- Back to login'),
-                        onTap: () => Navigator.pop(context),
+                      Text(errorMessage, style: TextStyle(color: Colors.red)),
+                      Padding(
+                        padding: EdgeInsets.only(top: 20),
+                        child: InkWell(
+                          child: Text('<- Back to login'),
+                          onTap: () => Navigator.pop(context),
+                        ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               ),
             ),

@@ -72,4 +72,39 @@ class ApiService {
     final Map<String, dynamic> data = jsonDecode(response.body);
     return Category.fromJson(data['data']);
   }
+
+  Future register(String name, String email, String password,
+    String passwordConfirm, String deviceName) async {
+    String url = '$baseUrl/api/auth/register';
+
+    final http.Response response = await http.post(
+      Uri.parse(url),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+        'Accept': 'application/json',
+      },
+      body: jsonEncode(<String, String>{
+        'name': name,
+        'email': email,
+        'password': password,
+        'password_confirmation': passwordConfirm,
+        'device_name': deviceName,
+      }),
+    );
+
+    if (response.statusCode == 422) {
+      final Map<String, dynamic> data = json.decode(response.body);
+      final Map<String, dynamic> errors = data['errors'];
+      String message = '';
+      errors.forEach((key, value) {
+        value.forEach((error) {
+          message += '$error\n';
+        });
+      });
+ 
+      throw Exception(message);
+    }
+ 
+    return response.body;
+  }
 }
