@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_transactions/models/category.dart';
 import 'package:flutter_transactions/providers/category_provider.dart';
+import 'package:flutter_transactions/widgets/category_add.dart';
 import 'package:flutter_transactions/widgets/category_edit.dart';
 import 'package:provider/provider.dart';
 
@@ -85,6 +86,18 @@ class CategoriesListState extends State<CategoriesList> {
                 ),
               );
             },
+          ),
+          floatingActionButton: FloatingActionButton(
+            onPressed: () {
+              showModalBottomSheet(
+                context: context,
+                isScrollControlled: true,
+                builder: (context) {
+                  return CategoryAdd(provider.addCategory);
+                },
+              );
+            },
+            child: Icon(Icons.add),
           ),
         );
       },
