@@ -59,7 +59,7 @@ class RegisterState extends State<Register> {
     final AuthProvider provider = Provider.of(context, listen: false);
 
     try {
-      String token = await provider.register(
+      await provider.register(
         nameController.text,
         emailController.text,
         passwordController.text,
