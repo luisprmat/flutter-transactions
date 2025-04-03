@@ -41,4 +41,11 @@ class AuthProvider extends ChangeNotifier {
     isAuthenticated = true;
     notifyListeners();
   }
+
+  Future<void> logout() async {
+    // TODO: Call API to destroy token
+    token = '';
+    isAuthenticated = false;
+    notifyListeners();
+}
 }
