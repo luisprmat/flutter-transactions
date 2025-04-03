@@ -1,3 +1,6 @@
+import 'dart:io';
+
+import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_transactions/providers/auth_provider.dart';
 import 'package:provider/provider.dart';
@@ -17,6 +20,34 @@ class RegisterState extends State<Register> {
   final confirmPasswordController = TextEditingController();
 
   String errorMessage = '';
+  late String deviceName;
+
+  @override
+  void initState() {
+    super.initState();
+    getDeviceName();
+  }
+
+  Future<void> getDeviceName() async {
+    try {
+      DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
+      if (Platform.isAndroid) {
+        AndroidDeviceInfo androidInfo = await deviceInfo.androidInfo;
+        setState(() {
+          deviceName = androidInfo.model;
+        });
+      } else if (Platform.isIOS) {
+        IosDeviceInfo iosInfo = await deviceInfo.iosInfo;
+        setState(() {
+          deviceName = iosInfo.name;
+        });
+      }
+    } catch (e) {
+      setState(() {
+        deviceName = 'Could not retrieve device name';
+      });
+    }
+  }
 
   Future<void> submit() async {
     final form = _formKey.currentState;
@@ -33,7 +64,7 @@ class RegisterState extends State<Register> {
         emailController.text,
         passwordController.text,
         confirmPasswordController.text,
-        'Some device name',
+        deviceName,
       );
 
       Navigator.pop(context);
