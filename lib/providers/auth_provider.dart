@@ -1,12 +1,22 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:flutter_transactions/services/api.dart';
 
 class AuthProvider extends ChangeNotifier {
   bool isAuthenticated = false;
   late String token;
   ApiService apiService = ApiService('');
+  final storage = new FlutterSecureStorage();
 
-  AuthProvider();
+  AuthProvider() {
+    getToken().then((value) {
+      if (value != null) {
+        token = value;
+        isAuthenticated = true;
+        notifyListeners();
+      }
+    });
+  }
 
   Future<void> register(
     String name,
@@ -23,21 +33,15 @@ class AuthProvider extends ChangeNotifier {
       deviceName,
     );
 
+    setToken(token);
     isAuthenticated = true;
     notifyListeners();
   }
 
-  Future<void> login(
-    String email,
-    String password,
-    String deviceName,
-  ) async {
-    token = await apiService.login(
-      email,
-      password,
-      deviceName,
-    );
+  Future<void> login(String email, String password, String deviceName) async {
+    token = await apiService.login(email, password, deviceName);
 
+    setToken(token);
     isAuthenticated = true;
     notifyListeners();
   }
@@ -46,6 +50,22 @@ class AuthProvider extends ChangeNotifier {
     // TODO: Call API to destroy token
     token = '';
     isAuthenticated = false;
+    await storage.delete(key: token);
     notifyListeners();
-}
+  }
+
+  Future<String?> getToken() async {
+    Future<String?> token = storage.read(key: 'token');
+    if (token != null) {
+      return Future.value(token);
+    }
+
+    return Future.value('');
+  }
+
+  Future<String?> setToken(String token) async {
+    await storage.write(key: 'token', value: token);
+
+    return token;
+  }
 }
