@@ -3,7 +3,11 @@ import 'package:http/http.dart' as http;
 import 'package:flutter_transactions/models/category.dart';
 
 class ApiService {
-  ApiService();
+  late String token;
+
+  ApiService(String token) {
+    this.token = token;
+  }
 
   final String baseUrl =
       'http://10.0.2.2:8000'; // from localhost `php artisan serve`
@@ -12,6 +16,11 @@ class ApiService {
   Future<List<Category>> fetchCategories() async {
     final http.Response response = await http.get(
       Uri.parse('$baseUrl/api/categories'),
+      headers: <String, String>{
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $token',
+      }
     );
 
     final Map<String, dynamic> data = json.decode(response.body);
@@ -31,7 +40,9 @@ class ApiService {
     final http.Response response = await http.put(
       Uri.parse(url),
       headers: <String, String>{
-        'Content-Type': 'application/json; charset=UTF-8',
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $token',
       },
       body: jsonEncode(<String, String>{'name': category.name}),
     );
@@ -47,7 +58,14 @@ class ApiService {
   Future<void> deleteCategory(id) async {
     String url = '$baseUrl/api/categories/$id';
 
-    final http.Response response = await http.delete(Uri.parse(url));
+    final http.Response response = await http.delete(
+      Uri.parse(url),
+      headers: <String, String>{
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $token',
+      },
+    );
 
     if (response.statusCode != 204) {
       throw Exception('Failed to delete category');
@@ -60,7 +78,9 @@ class ApiService {
     final http.Response response = await http.post(
       Uri.parse(url),
       headers: <String, String>{
-        'Content-Type': 'application/json; charset=UTF-8',
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $token',
       },
       body: jsonEncode(<String, String>{'name': name}),
     );
@@ -73,14 +93,19 @@ class ApiService {
     return Category.fromJson(data['data']);
   }
 
-  Future register(String name, String email, String password,
-    String passwordConfirm, String deviceName) async {
+  Future register(
+    String name,
+    String email,
+    String password,
+    String passwordConfirm,
+    String deviceName,
+  ) async {
     String url = '$baseUrl/api/auth/register';
 
     final http.Response response = await http.post(
       Uri.parse(url),
       headers: <String, String>{
-        'Content-Type': 'application/json; charset=UTF-8',
+        'Content-Type': 'application/json',
         'Accept': 'application/json',
       },
       body: jsonEncode(<String, String>{
@@ -101,10 +126,10 @@ class ApiService {
           message += '$error\n';
         });
       });
- 
+
       throw Exception(message);
     }
- 
+
     return response.body;
   }
 
@@ -114,7 +139,7 @@ class ApiService {
     final http.Response response = await http.post(
       Uri.parse(url),
       headers: <String, String>{
-        'Content-Type': 'application/json; charset=UTF-8',
+        'Content-Type': 'application/json',
         'Accept': 'application/json',
       },
       body: jsonEncode(<String, String>{
@@ -133,10 +158,10 @@ class ApiService {
           message += '$error\n';
         });
       });
- 
+
       throw Exception(message);
     }
- 
+
     return response.body;
   }
 }

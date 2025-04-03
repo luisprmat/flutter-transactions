@@ -3,18 +3,19 @@ import 'package:flutter_transactions/services/api.dart';
 
 class AuthProvider extends ChangeNotifier {
   bool isAuthenticated = false;
-  ApiService apiService = ApiService();
+  late String token;
+  ApiService apiService = ApiService('');
 
   AuthProvider();
 
-  Future<String> register(
+  Future<void> register(
     String name,
     String email,
     String password,
     String passwordConfirm,
     String deviceName,
   ) async {
-    String token = await apiService.register(
+    token = await apiService.register(
       name,
       email,
       password,
@@ -24,16 +25,14 @@ class AuthProvider extends ChangeNotifier {
 
     isAuthenticated = true;
     notifyListeners();
-
-    return token;
   }
 
-  Future<String> login(
+  Future<void> login(
     String email,
     String password,
     String deviceName,
   ) async {
-    String token = await apiService.login(
+    token = await apiService.login(
       email,
       password,
       deviceName,
@@ -41,7 +40,5 @@ class AuthProvider extends ChangeNotifier {
 
     isAuthenticated = true;
     notifyListeners();
-
-    return token;
   }
 }

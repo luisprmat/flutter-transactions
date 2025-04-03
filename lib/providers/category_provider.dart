@@ -1,13 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_transactions/models/category.dart';
+import 'package:flutter_transactions/providers/auth_provider.dart';
 import 'package:flutter_transactions/services/api.dart';
 
 class CategoryProvider extends ChangeNotifier {
   List<Category> categories = [];
   late ApiService apiService;
+  late AuthProvider authProvider;
 
-  CategoryProvider() {
-    apiService = ApiService();
+  CategoryProvider(AuthProvider authProvider) {
+    this.authProvider = authProvider;
+    apiService = ApiService(authProvider.token);
     init();
   }
 

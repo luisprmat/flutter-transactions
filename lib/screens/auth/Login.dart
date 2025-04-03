@@ -57,7 +57,7 @@ class LoginState extends State<Login> {
 
     final AuthProvider provider = Provider.of(context, listen: false);
     try {
-      String token = await provider.login(
+      await provider.login(
         emailController.text,
         passwordController.text,
         deviceName,
