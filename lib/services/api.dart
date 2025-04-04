@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:flutter_transactions/models/transaction.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter_transactions/models/category.dart';
 
@@ -163,5 +164,90 @@ class ApiService {
     }
 
     return response.body;
+  }
+  
+  Future<List<Transaction>> fetchTransactions() async {
+    final http.Response response = await http.get(
+      Uri.parse('$baseUrl/api/transactions'),
+      headers: <String, String>{
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $token',
+      }
+    );
+
+    final Map<String, dynamic> data = json.decode(response.body);
+
+    if (!data.containsKey('data') || data['data'] is! List) {
+      throw Exception('Failed to load transactions');
+    }
+
+    List transactions = data['data'];
+
+    return transactions.map((transaction) => Transaction.fromJson(transaction)).toList();
+  }
+
+  Future addTransaction(String amount, String category, String description, String date) async {
+    String url = '$baseUrl/api/transactions';
+
+    final http.Response response = await http.post(
+      Uri.parse(url),
+      headers: <String, String>{
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $token',
+      },
+      body: jsonEncode(<String, String>{
+        'amount': amount,
+        'category_id': category,
+        'description': description,
+        'transaction_date': date,
+      }),
+    );
+
+    if (response.statusCode != 201) {
+      throw Exception('Failed to create transaction');
+    }
+
+    final Map<String, dynamic> data = jsonDecode(response.body);
+    return Transaction.fromJson(data['data']);
+  }
+
+  Future<Transaction> updateTransaction(Transaction transaction) async {
+    String uri = '$baseUrl/api/transactions/${transaction.id.toString()}';
+    final http.Response response = await http.put(Uri.parse(uri),
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $token'
+      },
+      body: jsonEncode({
+        'amount': transaction.amount,
+        'category_id': transaction.categoryId,
+        'description': transaction.description,
+        'transaction_date': transaction.transactionDate
+      }));
+    if (response.statusCode != 200) {
+      print(response.body);
+      throw Exception('Failed to update transaction');
+    }
+    return Transaction.fromJson(jsonDecode(response.body)['data']);
+  }
+
+  Future<void> deleteTransaction(id) async {
+    String url = '$baseUrl/api/transactions/${id.toString()}';
+
+    final http.Response response = await http.delete(
+      Uri.parse(url),
+      headers: <String, String>{
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $token',
+      },
+    );
+
+    if (response.statusCode != 204) {
+      throw Exception('Failed to delete transaction');
+    }
   }
 }
