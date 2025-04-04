@@ -68,9 +68,9 @@ class RegisterState extends State<Register> {
       );
 
       Navigator.pop(context);
-    } catch (Exception) {
+    } catch (e) {
       setState(() {
-        errorMessage = Exception.toString().replaceAll('Exception: ', '');
+        errorMessage = e.toString().replaceAll('Exception: ', '');
       });
     }
   }

@@ -7,7 +7,7 @@ class ApiService {
   late String? token;
 
   ApiService(String? token) {
-    this.token = token;
+    token = token;
   }
 
   final String baseUrl = 'http://10.0.2.2:8000'; // from localhost `php artisan serve`

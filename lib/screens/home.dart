@@ -5,11 +5,13 @@ import 'package:flutter_transactions/screens/transactions/list.dart';
 import 'package:provider/provider.dart';
 
 class Home extends StatefulWidget {
+  const Home({super.key});
+
   @override
-  _HomeState createState() => _HomeState();
+  HomeState createState() => HomeState();
 }
 
-class _HomeState extends State<Home> {
+class HomeState extends State<Home> {
   int selectedIndex = 0;
   List<Widget> widgetOptions = [Transactions(), CategoriesList()];
 
