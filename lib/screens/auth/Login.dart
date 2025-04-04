@@ -62,9 +62,9 @@ class LoginState extends State<Login> {
         passwordController.text,
         deviceName,
       );
-    } catch (Exception) {
+    } catch (e) {
       setState(() {
-        errorMessage = Exception.toString().replaceAll('Exception: ', '');
+        errorMessage = e.toString().replaceAll('Exception: ', '');
       });
     }
   }

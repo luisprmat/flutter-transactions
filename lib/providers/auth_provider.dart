@@ -6,16 +6,14 @@ class AuthProvider extends ChangeNotifier {
   bool isAuthenticated = false;
   late String token;
   ApiService apiService = ApiService('');
-  final storage = new FlutterSecureStorage();
+  final storage = FlutterSecureStorage();
 
   AuthProvider() {
     getToken().then((value) {
-      if (value != null) {
-        token = value;
-        isAuthenticated = true;
-        notifyListeners();
-      }
-    });
+      token = value;
+      isAuthenticated = true;
+      notifyListeners();
+        });
   }
 
   Future<void> register(
