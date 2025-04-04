@@ -6,12 +6,11 @@ import 'package:flutter_transactions/models/category.dart';
 class ApiService {
   late String? token;
 
-  ApiService(String token) {
+  ApiService(String? token) {
     this.token = token;
   }
 
-  final String baseUrl =
-      'http://10.0.2.2:8000'; // from localhost `php artisan serve`
+  final String baseUrl = 'http://10.0.2.2:8000'; // from localhost `php artisan serve`
   // final String baseUrl = 'https://tight-optimum-weasel.ngrok-free.app/api/categories'; // from my ngrok
 
   Future<List<Category>> fetchCategories() async {

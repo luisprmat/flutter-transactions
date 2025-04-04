@@ -10,7 +10,6 @@ class TransactionProvider extends ChangeNotifier {
 
   TransactionProvider(AuthProvider authProvider) {
     authProvider = authProvider;
-    apiService = ApiService(authProvider.token);
     init();
   }
 
