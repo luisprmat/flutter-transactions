@@ -1,3 +1,5 @@
+import 'dart:ffi';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:flutter_transactions/services/api.dart';
@@ -54,16 +56,19 @@ class AuthProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<String?> getToken() async {
-    Future<String?> token = storage.read(key: 'token');
-    if (token != null) {
-      return Future.value(token);
+  Future<String> getToken() async {
+    try {
+      String? token = await storage.read(key: 'token');
+      if (token != null) {
+        return token;
+      }
+      return '';
+    } catch (e) {
+      return '';
     }
-
-    return Future.value('');
   }
 
-  Future<String?> setToken(String token) async {
+  Future<String> setToken(String token) async {
     await storage.write(key: 'token', value: token);
 
     return token;
