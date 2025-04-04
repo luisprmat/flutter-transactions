@@ -1,17 +1,25 @@
 import 'dart:convert';
 import 'package:flutter_transactions/models/transaction.dart';
+import 'package:flutter_transactions/providers/auth_provider.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter_transactions/models/category.dart';
 
 class ApiService {
   late String? token;
+  late AuthProvider? authProvider;
 
-  ApiService(String? token) {
-    token = token;
+  ApiService(String? apiToken, AuthProvider? auth) {
+    token = apiToken;
+    authProvider = auth;
   }
 
-  final String baseUrl = 'http://10.0.2.2:8000'; // from localhost `php artisan serve`
+  final String baseUrl =
+      'http://10.0.2.2:8000'; // from localhost `php artisan serve`
   // final String baseUrl = 'https://tight-optimum-weasel.ngrok-free.app/api/categories'; // from my ngrok
+
+  void logout() {
+    authProvider?.logout();
+  }
 
   Future<List<Category>> fetchCategories() async {
     final http.Response response = await http.get(
@@ -20,8 +28,13 @@ class ApiService {
         'Accept': 'application/json',
         'Content-Type': 'application/json',
         'Authorization': 'Bearer $token',
-      }
+      },
     );
+
+    if (response.statusCode == 401) {
+      logout();
+      throw Exception('Unauthorized.');
+    }
 
     final Map<String, dynamic> data = json.decode(response.body);
 
@@ -47,6 +60,11 @@ class ApiService {
       body: jsonEncode(<String, String>{'name': category.name}),
     );
 
+    if (response.statusCode == 401) {
+      logout();
+      throw Exception('Unauthorized');
+    }
+
     if (response.statusCode != 200) {
       throw Exception('Failed to update category');
     }
@@ -67,6 +85,11 @@ class ApiService {
       },
     );
 
+    if (response.statusCode == 401) {
+      logout();
+      throw Exception('Unauthorized');
+    }
+
     if (response.statusCode != 204) {
       throw Exception('Failed to delete category');
     }
@@ -84,6 +107,11 @@ class ApiService {
       },
       body: jsonEncode(<String, String>{'name': name}),
     );
+
+    if (response.statusCode == 401) {
+      logout();
+      throw Exception('Unauthorized');
+    }
 
     if (response.statusCode != 201) {
       throw Exception('Failed to create category');
@@ -164,7 +192,7 @@ class ApiService {
 
     return response.body;
   }
-  
+
   Future<List<Transaction>> fetchTransactions() async {
     final http.Response response = await http.get(
       Uri.parse('$baseUrl/api/transactions'),
@@ -172,8 +200,13 @@ class ApiService {
         'Accept': 'application/json',
         'Content-Type': 'application/json',
         'Authorization': 'Bearer $token',
-      }
+      },
     );
+
+    if (response.statusCode == 401) {
+      logout();
+      throw Exception('Unauthorized');
+    }
 
     final Map<String, dynamic> data = json.decode(response.body);
 
@@ -183,10 +216,17 @@ class ApiService {
 
     List transactions = data['data'];
 
-    return transactions.map((transaction) => Transaction.fromJson(transaction)).toList();
+    return transactions
+        .map((transaction) => Transaction.fromJson(transaction))
+        .toList();
   }
 
-  Future addTransaction(String amount, String category, String description, String date) async {
+  Future addTransaction(
+    String amount,
+    String category,
+    String description,
+    String date,
+  ) async {
     String url = '$baseUrl/api/transactions';
 
     final http.Response response = await http.post(
@@ -204,6 +244,11 @@ class ApiService {
       }),
     );
 
+    if (response.statusCode == 401) {
+      logout();
+      throw Exception('Unauthorized');
+    }
+
     if (response.statusCode != 201) {
       throw Exception('Failed to create transaction');
     }
@@ -214,18 +259,26 @@ class ApiService {
 
   Future<Transaction> updateTransaction(Transaction transaction) async {
     String uri = '$baseUrl/api/transactions/${transaction.id.toString()}';
-    final http.Response response = await http.put(Uri.parse(uri),
+    final http.Response response = await http.put(
+      Uri.parse(uri),
       headers: {
         'Accept': 'application/json',
         'Content-Type': 'application/json',
-        'Authorization': 'Bearer $token'
+        'Authorization': 'Bearer $token',
       },
       body: jsonEncode({
         'amount': transaction.amount,
         'category_id': transaction.categoryId,
         'description': transaction.description,
-        'transaction_date': transaction.transactionDate
-      }));
+        'transaction_date': transaction.transactionDate,
+      }),
+    );
+
+    if (response.statusCode == 401) {
+      logout();
+      throw Exception('Unauthorized');
+    }
+
     if (response.statusCode != 200) {
       print(response.body);
       throw Exception('Failed to update transaction');
@@ -244,6 +297,11 @@ class ApiService {
         'Authorization': 'Bearer $token',
       },
     );
+
+    if (response.statusCode == 401) {
+      logout();
+      throw Exception('Unauthorized');
+    }
 
     if (response.statusCode != 204) {
       throw Exception('Failed to delete transaction');

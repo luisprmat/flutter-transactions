@@ -5,15 +5,17 @@ import 'package:flutter_transactions/services/api.dart';
 class AuthProvider extends ChangeNotifier {
   bool isAuthenticated = false;
   late String token;
-  ApiService apiService = ApiService('');
+  ApiService apiService = ApiService('', null);
   final storage = FlutterSecureStorage();
 
   AuthProvider() {
     getToken().then((value) {
-      token = value;
-      isAuthenticated = true;
-      notifyListeners();
-        });
+      if (value.isNotEmpty) {
+        token = value;
+        isAuthenticated = true;
+        notifyListeners();
+      }
+    });
   }
 
   Future<void> register(
