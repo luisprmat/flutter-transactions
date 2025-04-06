@@ -190,7 +190,7 @@ class TransactionAddState extends State<TransactionAdd> {
     await widget.transactionCallback(
       transactionAmountController.text,
       transactionCategoryController.text,
-      transactionDateController.text,
+      transactionDescriptionController.text,
       transactionDateController.text,
     );
 
