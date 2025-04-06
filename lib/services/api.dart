@@ -13,13 +13,11 @@ class ApiService {
     authProvider = auth;
   }
 
-  final String baseUrl =
-      'http://10.0.2.2:8000'; // from localhost `php artisan serve`
-  // final String baseUrl = 'https://tight-optimum-weasel.ngrok-free.app/api/categories'; // from my ngrok
-
-  void logout() {
-    authProvider?.logout();
-  }
+  // final String baseUrl = 'http://10.0.2.2:8000'; // from localhost `php artisan serve`
+  final String baseUrl = 'https://tight-optimum-weasel.ngrok-free.app';
+  // void logout() {
+  //   authProvider?.logout();
+  // }
 
   Future<List<Category>> fetchCategories() async {
     final http.Response response = await http.get(
@@ -193,7 +191,26 @@ class ApiService {
     return response.body;
   }
 
+  Future logout() async {
+    String url = '$baseUrl/api/auth/logout';
+
+    final http.Response response = await http.post(
+      Uri.parse(url),
+      headers: <String, String>{
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+      },
+    );
+
+    if (response.statusCode != 204) {
+      throw Exception('Failed to close session');
+    }
+
+    return response.body;
+  }
+
   Future<List<Transaction>> fetchTransactions() async {
+    print(token);
     final http.Response response = await http.get(
       Uri.parse('$baseUrl/api/transactions'),
       headers: <String, String>{
@@ -228,7 +245,6 @@ class ApiService {
     String date,
   ) async {
     String url = '$baseUrl/api/transactions';
-
     final http.Response response = await http.post(
       Uri.parse(url),
       headers: <String, String>{

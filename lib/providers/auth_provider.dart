@@ -47,10 +47,11 @@ class AuthProvider extends ChangeNotifier {
   }
 
   Future<void> logout() async {
-    // TODO: Call API to destroy token
+    await apiService.logout();
     token = '';
     isAuthenticated = false;
     await storage.delete(key: token);
+
     notifyListeners();
   }
 

@@ -22,6 +22,7 @@ class TransactionProvider extends ChangeNotifier {
   Future<void> addTransaction(
     String amount, String category, String description, String date) async {
     try {
+      print(category);
       Transaction addedTransaction =
         await apiService.addTransaction(amount, category, description, date);
       transactions.add(addedTransaction);
