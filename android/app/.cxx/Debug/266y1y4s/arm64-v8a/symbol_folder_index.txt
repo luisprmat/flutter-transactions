@@ -1,0 +1,1 @@
+C:\Users\luisp\Documents\develop\projects\mobile\flutter\flutter_transactions\build\app\intermediates\cxx\Debug\266y1y4s\obj\arm64-v8a
