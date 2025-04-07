@@ -168,15 +168,16 @@ class TransactionEditState extends State<TransactionEdit> {
         return DropdownButtonFormField(
           elevation: 8,
           items:
-              categories.map<DropdownMenuItem<String>>((e) {
-                return DropdownMenuItem<String>(
-                  value: e.id.toString(),
-                  child: Text(
-                    e.name,
-                    style: TextStyle(color: Colors.black, fontSize: 20.0),
-                  ),
-                );
-              }).toList(),
+            categories.map<DropdownMenuItem<String>>((e) {
+              return DropdownMenuItem<String>(
+                value: e.id.toString(),
+                child: Text(
+                  e.name,
+                  style: TextStyle(color: Colors.black, fontSize: 20.0),
+                ),
+              );
+            }).toList(),
+          value: transactionCategoryController.text,
           onChanged: (String? newValue) {
             if (newValue == null) {
               return;
